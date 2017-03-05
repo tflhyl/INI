@@ -34,10 +34,9 @@ func scanSection(_ scanner: Scanner) throws -> Section {
     var settings = [String: String]()
     while true {
         if var key = scanner.scanCharacters(from: .alphanumerics) {
-            key += scanner.scanUpTo("=") ?? ""
+            key += scanner.scanUpTo("=")?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
             guard scanner.scanString("=", into: nil) else { throw ParseError.InvalidSyntax(scanner.position) }
-            scanner.scanString(" ", into: nil)
-            guard let value = scanner.scanUpToCharacters(from: .newlines) else { throw ParseError.InvalidSyntax(scanner.position) }
+            guard let value = scanner.scanUpToCharacters(from: .newlines)?.trimmingCharacters(in: .whitespacesAndNewlines) else { throw ParseError.InvalidSyntax(scanner.position) }
             settings[key] = value
             continue
         }
